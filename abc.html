@@ -12,8 +12,8 @@
                 let data = await response.json();
                 document.getElementById("temperature").textContent = data.temperature + "°C";
                 document.getElementById("humidity").textContent = data.humidity + "%";
-                document.getElementById("light-status").textContent = data.light_status;
-                document.getElementById("fan-status").textContent = data.fan_status;
+                document.getElementById("light-status").textContent = data.light;
+                document.getElementById("fan-status").textContent = data.fan;
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
