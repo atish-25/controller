@@ -45,8 +45,8 @@
             fetchData();
             setInterval(fetchData, 5000);
 
-            document.getElementById("light-btn").addEventListener("click", function() { toggleDevice("light", "light-btn", "light"); });
-            document.getElementById("fan-btn").addEventListener("click", function() { toggleDevice("fan", "fan-btn", "fan"); });
+            document.getElementById("light-btn").addEventListener("click", function() { toggleDevice("light", "light-btn", "light-status"); });
+            document.getElementById("fan-btn").addEventListener("click", function() { toggleDevice("fan", "fan-btn", "fan-status"); });
             document.getElementById("ac-btn").addEventListener("click", function() { toggleDevice("ac", "ac-btn", "temperature"); });
             document.getElementById("heater-btn").addEventListener("click", function() { toggleDevice("heater", "heater-btn", "humidity"); });
         });
