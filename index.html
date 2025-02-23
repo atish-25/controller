@@ -2,49 +2,39 @@
 <html>
 <head>
     <script>
-        var recognition;
+        var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = "en-US";
 
-        // Check if SpeechRecognition is supported
-        if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            
-            recognition.continuous = true; // Keep listening even after speech pauses
-            recognition.interimResults = false; // Only capture final results
-            recognition.lang = "en-US";
+        recognition.onresult = function(event) {
+            var transcript = event.results[event.results.length - 1][0].transcript;
+            console.log("Recognized:", transcript);
+            window.AppInventor.setWebViewString(transcript);
+        };
 
-            recognition.onresult = function(event) {
-                var transcript = event.results[event.results.length - 1][0].transcript.trim();
-                console.log("Recognized:", transcript); // Debugging output
-                
-                // Check if App Inventor WebView is available
-                if (window.AppInventor) {
-                    window.AppInventor.setWebViewString(transcript);
-                }
-            };
+        // Handle auto-restart on stop
+        recognition.onend = function() {
+            console.log("Speech recognition stopped. Restarting...");
+            setTimeout(() => recognition.start(), 1000); // Restart after 1 sec
+        };
 
-            recognition.onend = function() {
-                console.log("Speech recognition stopped. Restarting...");
-                recognition.start(); // Auto-restart on silence
-            };
-
-            recognition.onerror = function(event) {
-                console.error("Speech Recognition Error:", event.error);
-                if (event.error === "not-allowed") {
-                    alert("Microphone access is blocked. Please allow it in browser settings.");
-                }
-            };
-
-            function startListening() {
-                recognition.start();
-                console.log("Listening...");
+        // Handle errors
+        recognition.onerror = function(event) {
+            console.error("Speech recognition error:", event.error);
+            if (event.error !== "no-speech") {
+                setTimeout(() => recognition.start(), 1000);
             }
+        };
 
-            function stopListening() {
-                recognition.stop();
-                console.log("Stopped listening.");
-            }
-        } else {
-            alert("Speech recognition is not supported in this browser.");
+        function startListening() {
+            console.log("Starting speech recognition...");
+            recognition.start();
+        }
+
+        function stopListening() {
+            console.log("Stopping speech recognition...");
+            recognition.stop();
         }
     </script>
 </head>
