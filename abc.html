@@ -8,7 +8,7 @@
     <script>
         async function fetchData() {
             try {
-                let response = await fetch('/api/get_data/');
+                let response = await fetch('https://torrlabcontroller.pythonanywhere.com');
                 let data = await response.json();
                 document.getElementById("temperature").textContent = data.temperature + "°C";
                 document.getElementById("humidity").textContent = data.humidity + "%";
@@ -25,7 +25,7 @@
             let newStatus = statusElement.textContent === "OFF" ? "ON" : "OFF";
             
             try {
-                await fetch('/api/control_device/', {
+                await fetch('https://torrlabcontroller.pythonanywhere.com/post', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ device: device, status: newStatus })
@@ -55,7 +55,8 @@
 <body class="bg-gray-100 flex flex-col min-h-screen justify-between p-4">
     
     <header class="text-center text-3xl font-bold bg-blue-600 text-white p-6 rounded-md shadow-lg uppercase">
-        XYZ School
+        
+St. Mary's Convent Sr. Sec. School
     </header>
     
     <div class="flex flex-col md:flex-row gap-8 flex-grow justify-center items-center p-6">
@@ -86,7 +87,7 @@
     </div>
     
     <footer class="text-center text-2xl font-semibold bg-gray-900 text-white p-6 rounded-md shadow-lg uppercase">
-        ABC Tech Solutions
+        @Powered By TORRLab 
     </footer>
 </body>
 </html>
