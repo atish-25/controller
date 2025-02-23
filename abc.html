@@ -5,27 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IoT Control Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        async function fetchData() {
+            try {
+                let response = await fetch('/api/get_data/');
+                let data = await response.json();
+                document.getElementById("temperature").textContent = data.temperature + "°C";
+                document.getElementById("humidity").textContent = data.humidity + "%";
+                document.getElementById("light-status").textContent = data.light_status;
+                document.getElementById("fan-status").textContent = data.fan_status;
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        async function toggleDevice(device, buttonId, statusId) {
+            let button = document.getElementById(buttonId);
+            let statusElement = document.getElementById(statusId);
+            let newStatus = statusElement.textContent === "OFF" ? "ON" : "OFF";
+            
+            try {
+                await fetch('/api/control_device/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ device: device, status: newStatus })
+                });
+                statusElement.textContent = newStatus;
+                statusElement.classList.toggle("text-green-500");
+                statusElement.classList.toggle("text-red-500");
+                button.textContent = (newStatus === "ON" ? "Turn OFF " : "Turn ON ") + device;
+                button.classList.toggle("bg-green-500");
+                button.classList.toggle("bg-red-500");
+            } catch (error) {
+                console.error("Error updating device status:", error);
+            }
+        }
+        
+        document.addEventListener("DOMContentLoaded", function () {
+            fetchData();
+            setInterval(fetchData, 5000);
+
+            document.getElementById("light-btn").addEventListener("click", function() { toggleDevice("light", "light-btn", "light-status"); });
+            document.getElementById("fan-btn").addEventListener("click", function() { toggleDevice("fan", "fan-btn", "fan-status"); });
+            document.getElementById("ac-btn").addEventListener("click", function() { toggleDevice("ac", "ac-btn", "temperature"); });
+            document.getElementById("heater-btn").addEventListener("click", function() { toggleDevice("heater", "heater-btn", "humidity"); });
+        });
+    </script>
 </head>
 <body class="bg-gray-100 flex flex-col min-h-screen justify-between p-4">
     
-    <!-- Top Section: School Name -->
     <header class="text-center text-3xl font-bold bg-blue-600 text-white p-6 rounded-md shadow-lg uppercase">
         XYZ School
     </header>
     
-    <!-- Middle Section: Data Display and Controls -->
     <div class="flex flex-col md:flex-row gap-8 flex-grow justify-center items-center p-6">
         
-        <!-- Fetched Data Section -->
         <div class="bg-white p-8 rounded-lg shadow-xl w-full md:w-1/2 text-center">
             <h2 class="text-2xl font-semibold mb-4">Live Data</h2>
-            <p class="text-lg mb-2">Temperature: <span id="temperature" class="font-bold">28°C</span></p>
-            <p class="text-lg mb-2">Humidity: <span id="humidity" class="font-bold">65%</span></p>
+            <p class="text-lg mb-2">Temperature: <span id="temperature" class="font-bold">--°C</span></p>
+            <p class="text-lg mb-2">Humidity: <span id="humidity" class="font-bold">--%</span></p>
             <p class="text-lg mb-2">Light: <span id="light-status" class="font-bold text-red-500">OFF</span></p>
             <p class="text-lg">Fan: <span id="fan-status" class="font-bold text-red-500">OFF</span></p>
         </div>
         
-        <!-- Control Section -->
         <div class="bg-white p-8 rounded-lg shadow-xl w-full md:w-1/2 text-center">
             <h2 class="text-2xl font-semibold mb-4">Device Controls</h2>
             <button id="light-btn" class="px-6 py-3 rounded-md text-white font-semibold m-2 transition bg-green-500 hover:bg-green-700">
@@ -43,33 +85,8 @@
         </div>
     </div>
     
-    <!-- Bottom Section: Company Name -->
     <footer class="text-center text-2xl font-semibold bg-gray-900 text-white p-6 rounded-md shadow-lg uppercase">
         ABC Tech Solutions
     </footer>
-    
-    <script>
-        function toggleDevice(buttonId, statusId) {
-            document.getElementById(buttonId).addEventListener("click", function() {
-                let statusElement = document.getElementById(statusId);
-                if (statusElement.textContent === "OFF") {
-                    statusElement.textContent = "ON";
-                    statusElement.classList.replace("text-red-500", "text-green-500");
-                    this.textContent = "Turn OFF " + this.textContent.split(" ")[2];
-                    this.classList.replace("bg-green-500", "bg-red-500");
-                } else {
-                    statusElement.textContent = "OFF";
-                    statusElement.classList.replace("text-green-500", "text-red-500");
-                    this.textContent = "Turn ON " + this.textContent.split(" ")[2];
-                    this.classList.replace("bg-red-500", "bg-green-500");
-                }
-            });
-        }
-
-        toggleDevice("light-btn", "light-status");
-        toggleDevice("fan-btn", "fan-status");
-        toggleDevice("ac-btn", "temperature");
-        toggleDevice("heater-btn", "humidity");
-    </script>
 </body>
 </html>
