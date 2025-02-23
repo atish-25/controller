@@ -1,64 +1,73 @@
-import { useState } from "react";
-
-export default function Dashboard() {
-  const [deviceStatus, setDeviceStatus] = useState({
-    temperature: "28°C",
-    humidity: "65%",
-    light: false,
-    fan: false,
-  });
-
-  const toggleDevice = (device) => {
-    setDeviceStatus((prevStatus) => ({
-      ...prevStatus,
-      [device]: !prevStatus[device],
-    }));
-  };
-
-  return (
-    <div className="min-h-screen flex flex-col justify-between bg-gray-100 p-4">
-      {/* Top Section: School Name */}
-      <header className="text-center text-2xl font-bold bg-blue-500 text-white p-4 rounded-md shadow-md">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Control Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen justify-between p-4">
+    
+    <!-- Top Section: School Name -->
+    <header class="text-center text-2xl font-bold bg-blue-500 text-white p-4 rounded-md shadow-md">
         XYZ School
-      </header>
-
-      {/* Middle Section: Data Display and Controls */}
-      <div className="flex flex-col md:flex-row gap-6 flex-grow justify-center items-center p-6">
-        {/* Fetched Data Section */}
-        <div className="bg-white p-6 rounded-lg shadow-lg w-full md:w-1/2 text-center">
-          <h2 className="text-xl font-semibold mb-4">Live Data</h2>
-          <p className="text-lg">Temperature: {deviceStatus.temperature}</p>
-          <p className="text-lg">Humidity: {deviceStatus.humidity}</p>
-          <p className="text-lg">Light: {deviceStatus.light ? "ON" : "OFF"}</p>
-          <p className="text-lg">Fan: {deviceStatus.fan ? "ON" : "OFF"}</p>
+    </header>
+    
+    <!-- Middle Section: Data Display and Controls -->
+    <div class="flex flex-col md:flex-row gap-6 flex-grow justify-center items-center p-6">
+        
+        <!-- Fetched Data Section -->
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full md:w-1/2 text-center">
+            <h2 class="text-xl font-semibold mb-4">Live Data</h2>
+            <p class="text-lg">Temperature: <span id="temperature">28°C</span></p>
+            <p class="text-lg">Humidity: <span id="humidity">65%</span></p>
+            <p class="text-lg">Light: <span id="light-status">OFF</span></p>
+            <p class="text-lg">Fan: <span id="fan-status">OFF</span></p>
         </div>
-
-        {/* Control Section */}
-        <div className="bg-white p-6 rounded-lg shadow-lg w-full md:w-1/2 text-center">
-          <h2 className="text-xl font-semibold mb-4">Device Controls</h2>
-          <button
-            className={`px-4 py-2 rounded-md text-white font-semibold m-2 transition ${
-              deviceStatus.light ? "bg-red-500" : "bg-green-500"
-            }`}
-            onClick={() => toggleDevice("light")}
-          >
-            {deviceStatus.light ? "Turn OFF Light" : "Turn ON Light"}
-          </button>
-          <button
-            className={`px-4 py-2 rounded-md text-white font-semibold m-2 transition ${
-              deviceStatus.fan ? "bg-red-500" : "bg-green-500"
-            }`}
-            onClick={() => toggleDevice("fan")}
-          >
-            {deviceStatus.fan ? "Turn OFF Fan" : "Turn ON Fan"}
-          </button>
+        
+        <!-- Control Section -->
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full md:w-1/2 text-center">
+            <h2 class="text-xl font-semibold mb-4">Device Controls</h2>
+            <button id="light-btn" class="px-4 py-2 rounded-md text-white font-semibold m-2 transition bg-green-500">
+                Turn ON Light
+            </button>
+            <button id="fan-btn" class="px-4 py-2 rounded-md text-white font-semibold m-2 transition bg-green-500">
+                Turn ON Fan
+            </button>
         </div>
-      </div>
-
-      {/* Bottom Section: Company Name */}
-      <footer className="text-center text-xl font-semibold bg-gray-800 text-white p-4 rounded-md shadow-md">
-        ABC Tech Solutions
-      </footer>
     </div>
-  );
-}
+    
+    <!-- Bottom Section: Company Name -->
+    <footer class="text-center text-xl font-semibold bg-gray-800 text-white p-4 rounded-md shadow-md">
+        ABC Tech Solutions
+    </footer>
+    
+    <script>
+        document.getElementById("light-btn").addEventListener("click", function() {
+            let lightStatus = document.getElementById("light-status");
+            if (lightStatus.textContent === "OFF") {
+                lightStatus.textContent = "ON";
+                this.textContent = "Turn OFF Light";
+                this.classList.replace("bg-green-500", "bg-red-500");
+            } else {
+                lightStatus.textContent = "OFF";
+                this.textContent = "Turn ON Light";
+                this.classList.replace("bg-red-500", "bg-green-500");
+            }
+        });
+        
+        document.getElementById("fan-btn").addEventListener("click", function() {
+            let fanStatus = document.getElementById("fan-status");
+            if (fanStatus.textContent === "OFF") {
+                fanStatus.textContent = "ON";
+                this.textContent = "Turn OFF Fan";
+                this.classList.replace("bg-green-500", "bg-red-500");
+            } else {
+                fanStatus.textContent = "OFF";
+                this.textContent = "Turn ON Fan";
+                this.classList.replace("bg-red-500", "bg-green-500");
+            }
+        });
+    </script>
+</body>
+</html>
